@@ -16,6 +16,14 @@ session_timeout = 1800
 encryption_key_name = nationwide_cli_key
 clear_on_exit = true
 
+[debugging]
+# Development and API discovery settings
+capture_traffic = false
+save_requests = false
+api_discovery_mode = false
+request_log_file = ~/.nationwide-cli/requests.log
+discovered_apis_file = ~/.nationwide-cli/discovered_apis.json
+
 [nationwide]
 # Nationwide-specific settings
 base_url = https://onlinebanking.nationwide.co.uk

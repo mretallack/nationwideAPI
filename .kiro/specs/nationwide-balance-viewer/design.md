@@ -5,17 +5,21 @@
 ### System Components
 - **CLI Application**: Python-based command-line interface
 - **Authentication Module**: Selenium-based browser automation with MFA support
+- **Network Monitor**: Traffic capture and API discovery system
 - **Session Manager**: Secure cookie/session persistence
-- **Web Scraper**: HTML parsing for balance extraction
+- **API Client**: Direct JSON API communication (post-discovery)
+- **Web Scraper**: HTML parsing fallback for balance extraction
 - **Security Layer**: Credential encryption and anti-detection measures
 
 ### Technology Stack
 - **Language**: Python 3.11 (required)
 - **Environment**: Virtual environment (venv) for isolation
 - **Browser Automation**: Selenium WebDriver with Chrome/Firefox
+- **Network Monitoring**: Selenium wire proxy for traffic capture
 - **HTTP Client**: requests library with session persistence
 - **CLI Framework**: click
 - **HTML Parsing**: BeautifulSoup4
+- **JSON Processing**: Built-in json module with pretty printing
 - **Encryption**: cryptography library
 - **Anti-Detection**: undetected-chromedriver, random delays
 
@@ -52,22 +56,22 @@ User Launch → Browser Automation → Login Form → MFA Prompt → Session Sto
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   CLI Interface │────│ Browser Manager  │────│ Session Storage │
-│                 │    │ (Selenium)       │    │ (Encrypted)     │
+│   CLI Interface │────│ Browser Manager  │────│ Network Monitor │
+│                 │    │ (Selenium)       │    │ (Traffic Capture)│
 └─────────────────┘    └──────────────────┘    └─────────────────┘
          │                       │                       │
          │                       │                       │
          ▼                       ▼                       ▼
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│ Account Manager │────│ Web Scraper      │────│ Anti-Detection  │
-│                 │    │ (BeautifulSoup)  │    │ Layer           │
+│ Session Storage │────│ API Client       │────│ API Discovery   │
+│ (Encrypted)     │    │ (JSON Requests)  │    │ (Endpoint Map)  │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
          │                       │                       │
          │                       │                       │
          ▼                       ▼                       ▼
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│ Balance Display │    │ MFA Handler      │    │ Error Recovery  │
-│                 │    │ (User Prompt)    │    │                 │
+│ Balance Display │────│ Web Scraper      │────│ Anti-Detection  │
+│                 │    │ (HTML Fallback)  │    │ Layer           │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
 
@@ -159,7 +163,9 @@ NationwideAPI/
 │   ├── __init__.py
 │   ├── cli.py              # Main CLI interface
 │   ├── browser_manager.py  # Selenium automation
-│   ├── scraper.py          # HTML parsing and data extraction
+│   ├── network_monitor.py  # Traffic capture and API discovery
+│   ├── api_client.py       # Direct JSON API communication
+│   ├── scraper.py          # HTML parsing fallback
 │   ├── session_manager.py  # Cookie/session persistence
 │   ├── models.py           # Data models
 │   ├── security.py         # Encryption utilities
@@ -246,6 +252,7 @@ install:           # Install package in development mode
 ### Requirements.txt Dependencies
 ```txt
 selenium>=4.15.0
+selenium-wire>=5.1.0
 undetected-chromedriver>=3.5.0
 beautifulsoup4>=4.12.0
 requests>=2.31.0
@@ -281,6 +288,14 @@ timeout = 30
 session_timeout = 1800
 encryption_key_name = nationwide_cli_key
 clear_on_exit = true
+
+[debugging]
+# Development and API discovery settings
+capture_traffic = false
+save_requests = false
+api_discovery_mode = false
+request_log_file = ~/.nationwide-cli/requests.log
+discovered_apis_file = ~/.nationwide-cli/discovered_apis.json
 
 [nationwide]
 # Nationwide-specific settings
@@ -331,6 +346,44 @@ Thumbs.db
 # Application specific
 *.log
 .session_cache/
+
+# Test data (real credentials/sessions)
+tests/fixtures/real_*
+tests/data/live_*
+```
+
+## Testing Strategy
+
+### Test Categories
+- **Unit Tests**: Individual component testing with mock data
+- **Integration Tests**: Component interaction testing
+- **API Discovery Tests**: Network monitoring and endpoint detection
+- **Configuration Tests**: Settings loading and validation
+- **Security Tests**: Encryption and credential handling
+
+### Test Data Management
+- **Mock Data**: Fake account/balance data for testing (committed to git)
+- **Test Fixtures**: Sample HTML responses and JSON payloads (committed to git)
+- **Live Data**: Real credentials/sessions (never committed, git ignored)
+- **API Specifications**: Discovered endpoint documentation (committed to git)
+
+### Committable Test Assets
+```
+tests/
+├── fixtures/
+│   ├── mock_login_page.html      # Sample login page HTML
+│   ├── mock_balance_response.json # Sample balance API response
+│   ├── mock_account_list.json    # Sample account list
+│   └── mock_session_data.json    # Sample session structure
+├── data/
+│   ├── test_accounts.json        # Fake account data for testing
+│   ├── api_endpoints.json        # Discovered API documentation
+│   └── request_templates.json    # API request templates
+└── unit/
+    ├── test_models.py            # Data model tests
+    ├── test_config.py            # Configuration tests
+    ├── test_security.py          # Security utility tests
+    └── test_api_discovery.py     # Network monitoring tests
 ```
 
 ## Configuration Management (Updated)
@@ -394,6 +447,12 @@ The project uses a top-level Makefile for streamlined development workflow:
 3. Configure application: Edit `settings.ini`
 4. Daily development: `make run`, `make test`
 5. Clean environment: `make clean`
+
+### Git Workflow
+- **Manual commits only**: Changes are not automatically committed
+- **Explicit push requests**: Only push to remote when explicitly requested
+- **Single push per request**: One push operation per explicit request
+- **Developer control**: All version control operations require explicit instruction
 
 ### Configuration Security
 - User credentials never stored in version control

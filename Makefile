@@ -4,7 +4,7 @@
 help:
 	@echo "Nationwide Balance Viewer - Build Commands"
 	@echo "=========================================="
-	@echo "init        Initialize git repository and .gitignore"
+	@echo "init        Initialize project configuration (create settings.ini)"
 	@echo "setup       Create venv and install dependencies"
 	@echo "run         Run the application"
 	@echo "test        Run test suite"
@@ -14,17 +14,17 @@ help:
 	@echo "format      Format code"
 	@echo "install     Install package in development mode"
 
-# Initialize git repository (already done, but kept for reference)
-init:
-	@if [ ! -d .git ]; then \
-		git init; \
-		echo "settings.ini" >> .gitignore; \
-		echo "venv/" >> .gitignore; \
-		echo "__pycache__/" >> .gitignore; \
-		git add .gitignore; \
-		git commit -m "Initial commit: Add .gitignore"; \
+# Initialize project configuration (not git)
+init: settings.ini
+	@echo "✓ Project initialized"
+
+settings.ini: settings.ini.template
+	@if [ ! -f settings.ini ]; then \
+		cp settings.ini.template settings.ini; \
+		echo "✓ Created settings.ini from template"; \
+		echo "Please edit settings.ini with your preferences"; \
 	else \
-		echo "Git repository already initialized"; \
+		echo "✓ settings.ini already exists"; \
 	fi
 
 # Create virtual environment and install dependencies
@@ -39,12 +39,7 @@ venv/bin/activate: requirements.txt
 	@echo "✓ Dependencies installed"
 
 # Run the application
-run: venv/bin/activate
-	@if [ ! -f settings.ini ]; then \
-		echo "⚠ settings.ini not found. Creating from template..."; \
-		cp settings.ini.template settings.ini; \
-		echo "Please edit settings.ini with your preferences"; \
-	fi
+run: venv/bin/activate settings.ini
 	./venv/bin/python -m src.cli
 
 # Run tests

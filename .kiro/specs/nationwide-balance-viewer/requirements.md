@@ -42,6 +42,20 @@
 - WHEN the session expires THE SYSTEM SHALL require re-authentication
 - WHEN the application closes THE SYSTEM SHALL clear sensitive data from memory
 
+### API Discovery
+**As a** developer  
+**I want to** capture and analyze network requests after login  
+### API Discovery
+**As a** developer  
+**I want to** capture and analyze network requests after login  
+**So that** I can identify JSON APIs for balance retrieval
+
+#### Acceptance Criteria
+- WHEN login is successful THE SYSTEM SHALL capture all network requests
+- WHEN API calls are made THE SYSTEM SHALL log request/response details
+- WHEN JSON endpoints are discovered THE SYSTEM SHALL save API specifications
+- WHEN balance data is found THE SYSTEM SHALL document the API structure
+
 ### Error Handling
 **As a** user  
 **I want to** receive clear error messages  
@@ -51,3 +65,14 @@
 - WHEN the Nationwide API is unavailable THE SYSTEM SHALL display a service unavailable message
 - WHEN network connectivity is lost THE SYSTEM SHALL display a connection error
 - WHEN an unexpected error occurs THE SYSTEM SHALL log the error and display a generic error message
+
+### Development & Debugging
+**As a** developer  
+**I want to** inspect network traffic and API responses  
+**So that** I can understand and adapt to Nationwide's backend systems
+
+#### Acceptance Criteria
+- WHEN debugging mode is enabled THE SYSTEM SHALL log all HTTP requests and responses
+- WHEN new API endpoints are discovered THE SYSTEM SHALL save them for analysis
+- WHEN JSON responses are received THE SYSTEM SHALL pretty-print them for inspection
+- WHEN API structures change THE SYSTEM SHALL alert the developer
