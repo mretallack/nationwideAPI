@@ -1,0 +1,24 @@
+[DEFAULT]
+# Application settings
+debug = false
+log_level = INFO
+
+[browser]
+# Browser automation settings
+headless = false
+window_size = 1920x1080
+user_data_dir = ~/.nationwide-cli/browser
+timeout = 30
+
+[security]
+# Security and encryption settings
+session_timeout = 1800
+encryption_key_name = nationwide_cli_key
+clear_on_exit = true
+
+[nationwide]
+# Nationwide-specific settings
+base_url = https://onlinebanking.nationwide.co.uk
+retry_attempts = 3
+delay_min = 2
+delay_max = 5
