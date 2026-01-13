@@ -8,9 +8,10 @@
 **So that** I can access my account balance information
 
 #### Acceptance Criteria
-- WHEN a user provides valid Nationwide credentials THE SYSTEM SHALL authenticate successfully
+- WHEN a user provides valid customer number and date of birth THE SYSTEM SHALL authenticate successfully
 - WHEN a user provides invalid credentials THE SYSTEM SHALL display an authentication error
 - WHEN authentication fails 3 times THE SYSTEM SHALL temporarily lock access for security
+- WHEN the system detects multi-step authentication THE SYSTEM SHALL handle additional verification steps
 
 ### Balance Viewing
 **As a** Nationwide customer  
@@ -21,6 +22,8 @@
 - WHEN a user successfully authenticates THE SYSTEM SHALL display current account balance
 - WHEN balance data is unavailable THE SYSTEM SHALL display an appropriate error message
 - WHEN the system retrieves balance THE SYSTEM SHALL display the amount in GBP format
+- WHEN headless browser is used THE SYSTEM SHALL extract balance from HTML content
+- WHEN JSON APIs are available THE SYSTEM SHALL use direct API calls for faster retrieval
 
 ### Account Selection
 **As a** Nationwide customer with multiple accounts  
@@ -31,6 +34,8 @@
 - WHEN a user has multiple accounts THE SYSTEM SHALL display a list of available accounts
 - WHEN a user selects an account THE SYSTEM SHALL display that account's balance
 - WHEN account data is loading THE SYSTEM SHALL show a loading indicator
+- WHEN using headless browser mode THE SYSTEM SHALL parse account data from HTML responses
+- WHEN JSON APIs are discovered THE SYSTEM SHALL use direct API calls for better performance
 
 ### Security & Privacy
 **As a** Nationwide customer  
@@ -41,6 +46,8 @@
 - WHEN the application stores credentials THE SYSTEM SHALL encrypt sensitive data
 - WHEN the session expires THE SYSTEM SHALL require re-authentication
 - WHEN the application closes THE SYSTEM SHALL clear sensitive data from memory
+- WHEN using headless browser THE SYSTEM SHALL use secure session management
+- WHEN date of birth is required THE SYSTEM SHALL prompt securely and not log sensitive data
 
 ### API Discovery
 **As a** developer  
@@ -76,3 +83,5 @@
 - WHEN new API endpoints are discovered THE SYSTEM SHALL save them for analysis
 - WHEN JSON responses are received THE SYSTEM SHALL pretty-print them for inspection
 - WHEN API structures change THE SYSTEM SHALL alert the developer
+- WHEN headless browser mode is used THE SYSTEM SHALL execute JavaScript and capture dynamic content
+- WHEN login forms are detected THE SYSTEM SHALL analyze form structure and required fields

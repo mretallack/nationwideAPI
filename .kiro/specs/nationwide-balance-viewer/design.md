@@ -4,7 +4,8 @@
 
 ### System Components
 - **CLI Application**: Python-based command-line interface
-- **Authentication Module**: Selenium-based browser automation with MFA support
+- **Authentication Module**: Multi-mode browser automation (Chrome + headless)
+- **Headless Browser**: JavaScript-capable requests-html with Chromium
 - **Network Monitor**: Traffic capture and API discovery system
 - **Session Manager**: Secure cookie/session persistence
 - **API Client**: Direct JSON API communication (post-discovery)
@@ -14,39 +15,70 @@
 ### Technology Stack
 - **Language**: Python 3.11 (required)
 - **Environment**: Virtual environment (venv) for isolation
-- **Browser Automation**: Selenium WebDriver with Chrome/Firefox
-- **Network Monitoring**: Selenium wire proxy for traffic capture
+- **Browser Automation**: Dual approach - Selenium WebDriver + requests-html
+- **Headless Browser**: requests-html with pyppeteer (Chromium)
+- **Network Monitoring**: Selenium wire proxy + requests logging
 - **HTTP Client**: requests library with session persistence
 - **CLI Framework**: click
-- **HTML Parsing**: BeautifulSoup4
+- **HTML Parsing**: BeautifulSoup4 + pyquery
 - **JSON Processing**: Built-in json module with pretty printing
 - **Encryption**: cryptography library
-- **Anti-Detection**: undetected-chromedriver, random delays
+- **Anti-Detection**: undetected-chromedriver, random delays, realistic headers
+
+## Key Discovery: Nationwide Login Process
+
+### Actual Login Requirements (Discovered via Testing)
+**Authentication Fields Required:**
+1. **Customer Number**: Primary account identifier (e.g., 1234567890)
+2. **Date of Birth Day**: Day of birth (1-31)
+3. **Date of Birth Year**: Year of birth (YYYY format)
+
+**Form Endpoints Discovered:**
+- **Step 1**: `/AccessManagement/IdentifyCustomer/TemporaryCustomerLogin`
+- **Step 2**: `/AccessManagement/IdentifyCustomer/EnterCustomerIdentificationDetail`
+
+**Technical Requirements:**
+- **JavaScript Execution**: Required for dynamic form loading
+- **CSRF Tokens**: Multiple `__token` fields must be included
+- **Hidden Fields**: TimeZoneOffset, LocalTime, ScreenResolution tracking
+- **Session Management**: Cookies and form state persistence
+
+### Headless Browser Success
+**Proven Working Approach:**
+- ✅ **requests-html** with automatic Chromium download
+- ✅ **JavaScript execution** without Chrome installation
+- ✅ **Form detection** and field analysis
+- ✅ **Network traffic capture** for API discovery
+- ✅ **Multi-step form handling** capability
 
 ## Research Findings & Authentication Strategy
 
 ### POC Analysis Results
-After researching multiple approaches, the following findings emerged:
+After researching multiple approaches and testing with headless browser:
 
-**Open Banking API**: Requires FCA TPP authorization and eIDAS certificates - not viable for personal use.
+**Discovered Login Process**: Nationwide uses a multi-step authentication:
+1. **Customer Number**: Primary identifier
+2. **Date of Birth**: Secondary authentication (day + year)
+3. **Multi-step forms**: `/TemporaryCustomerLogin` → `/EnterCustomerIdentificationDetail`
+4. **CSRF Protection**: Multiple token fields required
+5. **JavaScript Required**: Dynamic form loading and validation
 
-**Web Scraping**: Nationwide returns 403 status, indicating strong anti-bot protection with:
-- CAPTCHA challenges
-- Device fingerprinting
-- Multi-factor authentication requirements
-- Rate limiting and IP blocking
-
-**Recommended Approach**: Hybrid browser automation with user interaction for MFA.
+**Browser Automation Results**:
+- **Headless Browser**: ✅ WORKING - requests-html with Chromium
+- **Form Detection**: ✅ Successfully identifies login forms and fields
+- **JavaScript Execution**: ✅ Automatic Chromium download and execution
+- **Network Capture**: ✅ Request/response logging functional
+- **Chrome Selenium**: ⚠ Requires full Chrome installation
 
 ### Authentication Flow (Updated)
 
 ```
-User Launch → Browser Automation → Login Form → MFA Prompt → Session Storage
-     │              │                   │           │              │
-     ▼              ▼                   ▼           ▼              ▼
-[CLI Start] → [Selenium Launch] → [Credentials] → [User MFA] → [Cookie Store]
-     │              │                   │           │              │
-     └──────────────┴───────────────────┴───────────┴──────────────┘
+User Launch → Headless Browser → Navigate → Form Analysis → Multi-step Auth
+     │              │               │           │              │
+     ▼              ▼               ▼           ▼              ▼
+[CLI Start] → [requests-html] → [JS Execute] → [Find Forms] → [Submit Data]
+     │              │               │           │              │
+     └──────────────┴───────────────┴───────────┴──────────────┘
                                    │
                                    ▼
                             [Authenticated Session]
@@ -121,12 +153,30 @@ class Balance:
 
 ## Implementation Strategy (Updated)
 
-### Browser Automation Approach
-- **Login Process**: Selenium WebDriver automation
-- **MFA Handling**: Pause for user interaction (SMS/app authentication)
-- **Session Persistence**: Save authenticated browser cookies
-- **Balance Extraction**: Parse HTML using BeautifulSoup
-- **Anti-Detection**: Use undetected-chromedriver with realistic delays
+### Dual-Mode Browser Approach
+- **Primary Mode**: Headless browser using requests-html with Chromium
+  - No Chrome installation required
+  - Automatic JavaScript execution
+  - Built-in network traffic capture
+  - Suitable for server environments
+- **Secondary Mode**: Full Chrome browser with Selenium
+  - Complete browser features and debugging
+  - Advanced anti-detection capabilities
+  - Manual MFA handling support
+  - Suitable for development environments
+
+### Multi-Step Authentication Process
+1. **Navigate**: to `/AccessManagement/IdentifyCustomer/IdentifyCustomer`
+2. **Form Detection**: Identify TemporaryCustomerLogin vs EnterCustomerIdentificationDetail
+3. **Credential Input**: Customer Number + Date of Birth (day + year)
+4. **CSRF Handling**: Extract and include required token fields
+5. **Session Management**: Maintain cookies and form state across steps
+
+### Data Extraction Strategy
+- **HTML Parsing**: Primary method using BeautifulSoup for balance extraction
+- **API Discovery**: Monitor network traffic for JSON endpoints
+- **Direct API Calls**: Switch to discovered APIs for better performance
+- **Fallback Handling**: Graceful degradation when APIs change
 
 ### Error Handling Strategy
 - **Detection Avoidance**: Implement human-like behavior patterns
@@ -162,7 +212,8 @@ NationwideAPI/
 ├── src/
 │   ├── __init__.py
 │   ├── cli.py              # Main CLI interface
-│   ├── browser_manager.py  # Selenium automation
+│   ├── browser_manager.py  # Selenium automation (Chrome required)
+│   ├── headless_browser.py # requests-html automation (no Chrome needed)
 │   ├── network_monitor.py  # Traffic capture and API discovery
 │   ├── api_client.py       # Direct JSON API communication
 │   ├── scraper.py          # HTML parsing fallback
@@ -185,6 +236,14 @@ NationwideAPI/
 - **Make** (for build automation)
 - **Git** (for version control)
 
+## Development Environment Setup
+
+### Prerequisites
+- **Python 3.11** (required for compatibility)
+- **Chrome/Chromium browser** (optional - for full Selenium mode)
+- **Make** (for build automation)
+- **Git** (for version control)
+
 ### Quick Start with Makefile
 ```bash
 # Initialize project (one-time setup)
@@ -195,7 +254,10 @@ make setup         # Create venv, install dependencies, copy settings template
 
 # Configure application
 cp settings.ini.template settings.ini
-# Edit settings.ini with your preferences
+# Edit settings.ini with your customer number and date of birth
+
+# Test headless browser (no Chrome needed)
+make test-headless # Test navigation and form detection
 
 # Run application
 make run           # Activate venv and run the CLI
@@ -253,13 +315,18 @@ install:           # Install package in development mode
 ```txt
 selenium>=4.15.0
 selenium-wire>=5.1.0
+blinker==1.7.0
 undetected-chromedriver>=3.5.0
 beautifulsoup4>=4.12.0
 requests>=2.31.0
+requests-html>=0.10.0
+lxml_html_clean>=0.4.0
+beautifulsoup4>=4.12.0
 click>=8.1.0
 cryptography>=41.0.0
 keyring>=24.0.0
 python-dotenv>=1.0.0
+pytest>=7.4.0
 ```
 
 ## Configuration Management

@@ -72,214 +72,282 @@
 - [ ] Add selenium-wire for network traffic capture
 - [ ] Add browser profile and session management
 - [ ] Implement graceful browser cleanup
+- [ ] Add dual-mode support (Chrome + headless fallback)
 - **Expected Outcome**: Robust browser automation foundation with traffic monitoring
 
 ## Authentication Implementation Tasks
 
-### Task 11: Implement Login Navigation
-- [ ] Add navigation to Nationwide login page
-- [ ] Implement form detection and element waiting
+### Task 11: Implement Headless Browser Manager
+- [x] Create headless_browser.py with requests-html
+- [x] Add automatic Chromium download and JavaScript execution
+- [x] Implement form detection and analysis
+- [x] Add network traffic capture and logging
+- [x] Handle multi-step authentication flow
+- [x] Add session management and cleanup
+- **Expected Outcome**: Working headless browser automation (no Chrome installation needed)
+
+### Task 12: Implement Login Navigation
+- [ ] Add navigation to Nationwide login page (both browser modes)
+- [ ] Implement form detection for multi-step process
+- [ ] Handle redirect from homepage to /AccessManagement/Login
 - [ ] Add error handling for page load failures
 - [ ] Test with different network conditions
-- **Expected Outcome**: Reliable login page access
+- **Expected Outcome**: Reliable login page access with dual-mode support
 
-### Task 12: Implement Form Interaction
-- [ ] Add credential input with human-like typing
+### Task 13: Implement Multi-Step Authentication
+- [ ] Add customer number input with human-like typing
+- [ ] Implement date of birth input (day + year fields)
+- [ ] Handle CSRF token extraction and submission
+- [ ] Add support for TemporaryCustomerLogin form
+- [ ] Add support for EnterCustomerIdentificationDetail form
 - [ ] Implement form submission handling
-- [ ] Add CSRF token detection and handling
-- [ ] Test form interaction without real credentials
-- **Expected Outcome**: Working form automation
+- [ ] Test authentication flow without real credentials
+- **Expected Outcome**: Working multi-step authentication system
 
-### Task 13: Implement MFA Handling
-- [ ] Add MFA detection logic
-- [ ] Create user prompt system for manual MFA
+### Task 14: Implement MFA Handling
+- [ ] Add MFA detection logic for additional verification steps
+- [ ] Create user prompt system for manual MFA (Chrome mode)
 - [ ] Implement timeout handling for MFA process
 - [ ] Add MFA completion verification
-- **Expected Outcome**: Interactive MFA support
+- [ ] Handle headless mode limitations for MFA
+- **Expected Outcome**: Interactive MFA support where possible
 
-### Task 14: Implement Session Management
-- [ ] Create session_manager.py for cookie persistence
+### Task 15: Implement Session Management
+- [ ] Create session_manager.py for cookie persistence (both browser modes)
 - [ ] Add session validation and refresh logic
-- [ ] Implement secure session storage
+- [ ] Implement secure session storage with encryption
 - [ ] Add session cleanup on exit
-- **Expected Outcome**: Persistent authentication sessions
+- [ ] Handle session differences between Chrome and headless modes
+- **Expected Outcome**: Persistent authentication sessions across browser modes
 
 ## Data Extraction Tasks
 
-### Task 15: Implement Web Scraper
+### Task 16: Implement Web Scraper
 - [ ] Create scraper.py with BeautifulSoup integration
-- [ ] Add balance extraction from account pages (fallback method)
-- [ ] Implement multiple account detection
-- [ ] Add robust HTML parsing with fallbacks
+- [ ] Add balance extraction from account pages (HTML parsing method)
+- [ ] Implement multiple account detection from HTML
+- [ ] Add robust HTML parsing with fallbacks for layout changes
+- [ ] Support both Chrome and headless browser HTML sources
 - **Expected Outcome**: Reliable balance data extraction fallback
 
-### Task 16: Implement Network Monitor
-- [ ] Create network_monitor.py with selenium-wire integration
-- [ ] Add request/response capture and logging
-- [ ] Implement API endpoint discovery
-- [ ] Add JSON response analysis and pretty-printing
-- [ ] Create discovered API documentation system
-- **Expected Outcome**: Complete network traffic analysis system
+### Task 17: Implement Network Monitor
+- [x] Create network_monitor.py with selenium-wire integration
+- [x] Add request/response capture and logging
+- [x] Implement API endpoint discovery
+- [x] Add JSON response analysis and pretty-printing
+- [x] Create discovered API documentation system
+- **Expected Outcome**: Complete network traffic analysis system (implemented in headless_browser.py)
 
-### Task 17: Implement API Client
+### Task 18: Implement API Client
 - [ ] Create api_client.py for direct JSON API calls
 - [ ] Add discovered endpoint integration
-- [ ] Implement session token management
+- [ ] Implement session token management for API calls
 - [ ] Add request/response validation
-- [ ] Create API call optimization
+- [ ] Create API call optimization and caching
+- [ ] Handle API authentication using discovered session tokens
 - **Expected Outcome**: Efficient direct API communication
 
-### Task 18: Implement Account Manager
-- [ ] Create account selection logic using discovered APIs
-- [ ] Add account list parsing from JSON responses
+### Task 19: Implement Account Manager
+- [ ] Create account selection logic using discovered APIs and HTML parsing
+- [ ] Add account list parsing from both JSON responses and HTML
 - [ ] Implement balance refresh functionality
-- [ ] Add account data caching
+- [ ] Add account data caching and validation
 - [ ] Integrate with both API client and web scraper
+- [ ] Handle multiple account scenarios
 - **Expected Outcome**: Complete account management system
 
 ## CLI Interface Tasks
 
-### Task 19: Implement CLI Framework
+### Task 20: Implement CLI Framework
 - [ ] Create cli.py with click framework
 - [ ] Add main command structure and help
-- [ ] Implement configuration loading
+- [ ] Implement configuration loading with new credential fields
 - [ ] Add logging setup and configuration
 - [ ] Add debugging mode for API discovery
-- **Expected Outcome**: Professional CLI interface with debugging support
+- [ ] Add browser mode selection (Chrome vs headless)
+- **Expected Outcome**: Professional CLI interface with dual-mode support
 
-### Task 20: Implement Balance Command
+### Task 21: Implement Authentication Commands
+- [ ] Add login command for manual authentication
+- [ ] Update credential prompts for customer number + date of birth
+- [ ] Implement logout/session clear command
+- [ ] Add session status checking
+- [ ] Include credential validation for new fields
+- [ ] Add browser mode switching
+- **Expected Outcome**: Complete authentication CLI with correct credential handling
+
+### Task 22: Implement Balance Command
 - [ ] Add balance viewing command
 - [ ] Implement account selection options
 - [ ] Add output formatting (table, JSON)
 - [ ] Include error handling and user feedback
 - [ ] Support both API and scraping methods
+- [ ] Add browser mode preference handling
 - **Expected Outcome**: Working balance display command
 
-### Task 21: Implement Authentication Commands
-- [ ] Add login command for manual authentication
-- [ ] Implement logout/session clear command
-- [ ] Add session status checking
-- [ ] Include credential validation
-- [ ] Add API discovery mode toggle
-- **Expected Outcome**: Complete authentication CLI
-
-### Task 22: Implement Debug Commands
+### Task 23: Implement Debug Commands
 - [ ] Add network traffic capture command
 - [ ] Implement API discovery analysis command
 - [ ] Add request/response inspection tools
 - [ ] Create discovered API documentation viewer
+- [ ] Add headless browser testing command
+- [ ] Add form analysis and debugging tools
 - **Expected Outcome**: Complete debugging and analysis CLI
 
 ## Testing and Quality Tasks
 
-### Task 23: Create Test Infrastructure
-- [ ] Create test directory structure with fixtures/
-- [ ] Add mock data files (accounts, balances, responses)
-- [ ] Create sample HTML and JSON test fixtures
-- [ ] Add test configuration and utilities
-- [ ] Update .gitignore for test data separation
+### Task 24: Create Test Infrastructure
+- [x] Create test directory structure with fixtures/
+- [x] Add mock data files (accounts, balances, responses)
+- [x] Create sample HTML and JSON test fixtures
+- [x] Add test configuration and utilities
+- [x] Update .gitignore for test data separation
 - **Expected Outcome**: Complete test infrastructure with safe mock data
 
-### Task 24: Create Unit Tests
-- [ ] Add tests for data models and utilities
-- [ ] Create tests for configuration loading
-- [ ] Add security module tests
-- [ ] Implement CLI command tests
-- [ ] Add network monitoring tests
+### Task 25: Update Test Data for New Authentication
+- [ ] Create mock login forms with customer number + date of birth fields
+- [ ] Add sample multi-step authentication responses
+- [ ] Create test fixtures for TemporaryCustomerLogin form
+- [ ] Add test fixtures for EnterCustomerIdentificationDetail form
+- [ ] Update mock session data with new credential structure
+- **Expected Outcome**: Test data reflecting actual Nationwide login process
+
+### Task 26: Create Unit Tests
+- [x] Add tests for data models and utilities
+- [x] Create tests for configuration loading
+- [x] Add security module tests
+- [x] Implement CLI command tests
+- [x] Add network monitoring tests
+- [ ] Add tests for headless browser functionality
+- [ ] Add tests for multi-step authentication
+- [ ] Update configuration tests for new credential fields
 - **Expected Outcome**: Comprehensive unit test suite
 
-### Task 25: Create Integration Tests
-- [ ] Add browser automation tests (without real login)
-- [ ] Create session management tests
-- [ ] Add configuration integration tests
+### Task 27: Create Integration Tests
+- [ ] Add browser automation tests (without real login) for both modes
+- [ ] Create session management tests for dual-mode
+- [ ] Add configuration integration tests with new fields
 - [ ] Test API discovery functionality
+- [ ] Test headless browser form detection
 - [ ] Test Makefile targets
 - **Expected Outcome**: Working integration test suite
 
-### Task 26: Create API Discovery Tests
+### Task 28: Create Headless Browser Tests
+- [ ] Add headless navigation validation tests
+- [ ] Create form detection and analysis tests
+- [ ] Add JavaScript execution tests
+- [ ] Test multi-step form handling
 - [ ] Add network traffic capture validation
-- [ ] Create endpoint discovery tests
-- [ ] Add JSON response parsing tests
-- [ ] Test API documentation generation
-- **Expected Outcome**: Validated API discovery system
+- **Expected Outcome**: Validated headless browser system
 
-### Task 27: Add Error Handling
+### Task 29: Add Error Handling
 - [ ] Implement comprehensive error handling throughout
-- [ ] Add user-friendly error messages
+- [ ] Add user-friendly error messages for authentication failures
 - [ ] Create error recovery mechanisms
 - [ ] Add logging for debugging
 - [ ] Handle API discovery failures gracefully
+- [ ] Add browser mode fallback handling
 - **Expected Outcome**: Robust error handling system
 
-### Task 28: Performance Optimization
-- [ ] Optimize browser startup and page loading
+### Task 30: Performance Optimization
+- [ ] Optimize browser startup and page loading for both modes
 - [ ] Add request caching where appropriate
 - [ ] Implement connection pooling
 - [ ] Add performance monitoring
 - [ ] Optimize API vs scraping decision logic
+- [ ] Add headless browser performance tuning
 - **Expected Outcome**: Optimized application performance
 
 ## Final Integration Tasks
 
-### Task 29: End-to-End Testing
+### Task 31: End-to-End Testing
 - [ ] Test complete workflow without real credentials
 - [ ] Verify all Makefile commands work
-- [ ] Test configuration management
+- [ ] Test configuration management with new credential fields
 - [ ] Validate documentation accuracy
 - [ ] Test API discovery mode functionality
+- [ ] Test both browser modes (Chrome and headless)
 - **Expected Outcome**: Fully functional application ready for real testing
 
-### Task 30: Security Audit
-- [ ] Review all credential handling code
+### Task 32: Security Audit
+- [ ] Review all credential handling code for date of birth security
 - [ ] Verify no sensitive data in logs
 - [ ] Test session cleanup and encryption
 - [ ] Validate anti-detection measures
 - [ ] Audit API discovery data handling
+- [ ] Review headless browser security implications
 - **Expected Outcome**: Security-validated application
 
-### Task 31: API Documentation
+### Task 33: Authentication Integration
+- [ ] Test complete multi-step authentication flow
+- [ ] Validate customer number + date of birth handling
+- [ ] Test CSRF token management
+- [ ] Verify session persistence across authentication steps
+- [ ] Test authentication error handling
+- **Expected Outcome**: Working end-to-end authentication
+
+### Task 34: API Documentation
 - [ ] Document discovered API endpoints
 - [ ] Create API usage examples
 - [ ] Add endpoint specification files
 - [ ] Document API vs scraping decision logic
+- [ ] Document headless browser capabilities and limitations
 - **Expected Outcome**: Complete API documentation
 
-### Task 32: Documentation Finalization
-- [ ] Update README with final instructions
-- [ ] Add troubleshooting guide
-- [ ] Create usage examples
+### Task 35: Documentation Finalization
+- [ ] Update README with final instructions and new credential requirements
+- [ ] Add troubleshooting guide for both browser modes
+- [ ] Create usage examples with correct authentication
 - [ ] Document configuration options
 - [ ] Add API discovery usage guide
+- [ ] Add headless browser setup instructions
 - **Expected Outcome**: Complete, accurate documentation
 
 ## Deployment Preparation Tasks
 
-### Task 33: Package Preparation
+### Task 36: Package Preparation
 - [ ] Finalize setup.py with proper metadata
 - [ ] Test installation in clean environment
-- [ ] Verify all dependencies are correct
+- [ ] Verify all dependencies are correct including headless browser deps
 - [ ] Add version management
 - [ ] Include API discovery dependencies
+- [ ] Test headless browser auto-installation
 - **Expected Outcome**: Installable Python package
 
-### Task 34: Final Validation
+### Task 37: Final Validation
 - [ ] Run complete test suite
 - [ ] Verify all requirements are met
 - [ ] Test on different Python 3.11 environments
 - [ ] Validate against original requirements
 - [ ] Test API discovery functionality
+- [ ] Test headless browser in different environments
 - **Expected Outcome**: Production-ready application
 
 ---
 
-**Total Tasks**: 34
+**Total Tasks**: 37
 **Estimated Completion**: Implement incrementally, testing each component before proceeding to dependent tasks.
 
 ## Task Dependencies
 
-**Phase 1 - Setup (Tasks 1-6)**: Foundation
+**Phase 1 - Setup (Tasks 1-6)**: Foundation ✅ COMPLETE
 **Phase 2 - Core (Tasks 7-10)**: Data models, security, browser automation
-**Phase 3 - Discovery (Tasks 11-18)**: Authentication, network monitoring, API discovery
-**Phase 4 - Interface (Tasks 19-22)**: CLI commands and debugging tools
-**Phase 5 - Testing (Tasks 23-28)**: Test infrastructure and validation
-**Phase 6 - Integration (Tasks 29-34)**: Final integration and deployment
+**Phase 3 - Authentication (Tasks 11-15)**: Multi-step login, headless browser, session management
+**Phase 4 - Data Extraction (Tasks 16-19)**: API discovery, scraping, account management
+**Phase 5 - Interface (Tasks 20-23)**: CLI commands and debugging tools
+**Phase 6 - Testing (Tasks 24-30)**: Test infrastructure, validation, and performance
+**Phase 7 - Integration (Tasks 31-37)**: Final integration, security audit, and deployment
+
+## Completed Tasks Summary
+- ✅ **Tasks 1-6**: Project setup, configuration, documentation
+- ✅ **Tasks 7-9**: Data models, security, anti-detection
+- ✅ **Task 11**: Headless browser manager (working implementation)
+- ✅ **Task 17**: Network monitoring (integrated in headless browser)
+- ✅ **Task 24**: Test infrastructure
+
+## Key Changes Made
+- **Authentication**: Updated for Customer Number + Date of Birth (not password)
+- **Dual-Mode Browser**: Chrome Selenium + headless requests-html
+- **Multi-Step Login**: Two-form authentication process
+- **Headless Success**: Working implementation without Chrome installation
+- **API Discovery**: Integrated network monitoring and endpoint discovery

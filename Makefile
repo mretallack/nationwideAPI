@@ -7,6 +7,7 @@ help:
 	@echo "init        Initialize project configuration (create settings.ini)"
 	@echo "setup       Create venv and install dependencies"
 	@echo "run         Run the application"
+	@echo "test-headless  Test headless login (no Chrome needed)"
 	@echo "test        Run test suite"
 	@echo "clean       Clean build artifacts and cache"
 	@echo "dev-setup   Setup with development dependencies"
@@ -41,6 +42,10 @@ venv/bin/activate: requirements.txt
 # Run the application
 run: venv/bin/activate settings.ini
 	./venv/bin/python -m src.cli
+
+# Test headless login (no Chrome needed)
+test-headless: venv/bin/activate settings.ini
+	./venv/bin/python -m src.cli test-headless-navigation
 
 # Run tests
 test: venv/bin/activate
